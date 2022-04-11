@@ -531,3 +531,23 @@ select firstname, lastname, salary, dense_rank() over (order by salary desc) fro
 
 select * from 
 (select firstname, lastname, location, salary, row_number() over (partition by location order by salary desc) as row_num from employee) temptable where row_num = 1;
+
+select max(salary) as secondHighestSalary from employee where salary < (select max(salary) from employee)
+
+ SELECT IFNULL((select distinct salary from employee order by salary desc limit 1 offset 4), NULL) AS secondHighestSalary;
+
+ SELECT IFNULL(select distinct salary from (select salary, dense_rank() over (order by salary desc) as denserank from employee) temp where temp.denserank = 2, NULL) AS secondHighestSalary;
+
+select score, dense_rank() over (order by score desc) as "rank" from scores
+
+select distinct l1.num as ConsecutiveNums from logs l1 join logs l2 on l1.id = l2.id + 1 and l1.num = l2.num join logs l3 on l1.id = l3.id + 2 and l1.num = l3.num 
+
+select e1.name as employee from employee e1 join employee e2 on e1.managerID = e2.id and e1.salary > e2.salary
+
+select email from (select email, count(email) as cnt from person group by email) temp where temp.cnt > 1;
+
+select email from person group by email having count(email)>1;
+
+select name from customers c left join orders o on c.id = o.customerId where o.customerId is NULL;
+
+select name as customers from customers where id not in (select customerId from orders);
