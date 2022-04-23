@@ -551,3 +551,5 @@ select email from person group by email having count(email)>1;
 select name from customers c left join orders o on c.id = o.customerId where o.customerId is NULL;
 
 select name as customers from customers where id not in (select customerId from orders);
+
+select department.name as department, employee.name as employee, salary from employee join department on employee.departmentID=department.id where (departmentId, salary) in (select departmentId, max(salary) as salary from employee group by departmentId);
