@@ -553,3 +553,11 @@ select name from customers c left join orders o on c.id = o.customerId where o.c
 select name as customers from customers where id not in (select customerId from orders);
 
 select department.name as department, employee.name as employee, salary from employee join department on employee.departmentID=department.id where (departmentId, salary) in (select departmentId, max(salary) as salary from employee group by departmentId);
+
+select avg(total_orders_per_customer) as avg_orders_per_customer from (select order_customer_id, count(*) as total_orders_per_customer from orders group by order_customer_id) x;
+
+with total_orders (order_customer_id,total_orders_per_customer) as (select order_customer_id, count(*) as total_orders_per_customer from orders group by order_customer_id) select avg(total_orders_per_customer) as avg_orders_per_customer from total_orders;
+
+select * from (select order_customer_id, count(*) as total_orders_per_customer from orders group by order_customer_id) total_orders join (SELECT avg(total_orders_per_customer) as avg_orders_per_customer from (SELECT order_customer_id, count(*) as total_orders_per_customer from orders group by order_customer_id) x) average_orders on total_orders.total_orders_per_customer > average_orders.avg_orders_per_customer;
+
+with total_orders(order_customer_id,total_orders_per_customer) as (select order_customer_id, count(*) as total_orders_per_customer from orders group by order_customer_id), average_orders(avg_orders_per_customer) as (SELECT avg(total_orders_per_customer) as avg_orders_per_customer from total_orders) select * from total_orders join average_orders on total_orders.total_orders_per_customer > average_orders.avg_orders_per_customer;
